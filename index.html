@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SFX Detection Video Game</title>
+ 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+ 
+    body {
+      background: #0f172a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+ 
+    .container {
+      width: 100%;
+      max-width: 850px;
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+ 
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+ 
+    .subtitle {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+ 
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+ 
+    .card {
+      flex: 1;
+      background: #334155;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+    }
+ 
+    .video-wrapper {
+      overflow: hidden;
+      border-radius: 16px;
+      margin-bottom: 25px;
+    }
+ 
+    iframe {
+      width: 100%;
+      height: 480px;
+      border: none;
+    }
+ 
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+ 
+    button {
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+ 
+    button:hover {
+      transform: translateY(-2px);
+    }
+ 
+    .yes {
+      background: #22c55e;
+      color: white;
+    }
+ 
+    .no {
+      background: #ef4444;
+      color: white;
+    }
+ 
+    .next {
+      background: #3b82f6;
+      color: white;
+      width: 100%;
+      margin-top: 20px;
+    }
+ 
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      min-height: 30px;
+      font-size: 1.1rem;
+    }
+ 
+    .correct {
+      color: #4ade80;
+    }
+ 
+    .wrong {
+      color: #f87171;
+    }
+ 
+    @media (max-width: 700px) {
+      iframe {
+        height: 240px;
+      }
+ 
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+ 
+<body>
+ 
+  <div class="container">
+ 
+    <h1>SFX Detection Game</h1>
+ 
+    <p class="subtitle">
+      Watch the clip and determine whether it contains sound effects (SFX).
+    </p>
+ 
+    <div class="scoreboard">
+ 
+      <div class="card">
+        <h3>Score</h3>
+        <p id="score">0</p>
+      </div>
+ 
+      <div class="card">
+        <h3>Round</h3>
+        <p id="round">1</p>
+      </div>
+ 
+      <div class="card">
+        <h3>Total</h3>
+        <p id="total">0</p>
+      </div>
+ 
+    </div>
+ 
+    <div class="video-wrapper">
+      <iframe
+        id="youtubePlayer"
+        allow="autoplay"
+        allowfullscreen>
+      </iframe>
+    </div>
+ 
+    <div class="buttons">
+ 
+      <button class="yes" onclick="checkAnswer(true)">
+        Contains SFX
+      </button>
+ 
+      <button class="no" onclick="checkAnswer(false)">
+        No SFX
+      </button>
+ 
+    </div>
+ 
+    <div class="result" id="result"></div>
+ 
+    <button class="next" onclick="nextRound()">
+      Next Clip
+    </button>
+ 
+  </div>
+ 
+  <script>
+ 
+    const clips = [
+ 
+      {
+        youtubeId: "YxVkXs8pwKE",
+        start: 0,
+        end: 06,
+        hasSFX: true
+      },
+ 
+      {
+        youtubeId: "PHIvaiaVzIw,
+        start: 0,
+        end: 06,
+        hasSFX: false
+      },
+ 
+      {
+        youtubeId: "Tgm90h3xS4w",
+        start: 0,
+        end: 10,
+        hasSFX: true
+      }
+ 
+    ];
+ 
+    let currentRound = 0;
+    let score = 0;
+    let answered = false;
+ 
+    const player = document.getElementById("youtubePlayer");
+    const result = document.getElementById("result");
+    const scoreDisplay = document.getElementById("score");
+    const roundDisplay = document.getElementById("round");
+    const totalDisplay = document.getElementById("total");
+ 
+    totalDisplay.textContent = clips.length;
+ 
+    function loadClip() {
+ 
+      answered = false;
+ 
+      const clip = clips[currentRound];
+ 
+      roundDisplay.textContent = currentRound + 1;
+ 
+      result.textContent = "";
+      result.className = "result";
+ 
+      player.src =
+        `https://www.youtube.com/embed/${clip.youtubeId}?start=${clip.start}&end=${clip.end}&autoplay=1&rel=0`;
+ 
+    }
+ 
+    function checkAnswer(userAnswer) {
+ 
+      if (answered) return;
+ 
+      answered = true;
+ 
+      const correctAnswer = clips[currentRound].hasSFX;
+ 
+      if (userAnswer === correctAnswer) {
+ 
+        score++;
+ 
+        scoreDisplay.textContent = score;
+ 
+        result.textContent = "Correct!";
+        result.classList.add("correct");
+ 
+      } else {
+ 
+        result.textContent = correctAnswer
+          ? "Wrong! This clip contains SFX."
+          : "Wrong! This clip does not contain SFX.";
+ 
+        result.classList.add("wrong");
+ 
+      }
+ 
+    }
+ 
+    function nextRound() {
+ 
+      currentRound++;
+ 
+      if (currentRound >= clips.length) {
+ 
+        endGame();
+        return;
+ 
+      }
+ 
+      loadClip();
+ 
+    }
+ 
+    function endGame() {
+ 
+      document.querySelector(".buttons").style.display = "none";
+      document.querySelector(".next").style.display = "none";
+ 
+      result.innerHTML = `
+        <h2>Game Complete</h2>
+        <br>
+        <p>Final Score: <strong>${score}</strong> / <strong>${clips.length}</strong></p>
+      `;
+ 
+      result.className = "result correct";
+ 
+    }
+ 
+    loadClip();
+ 
+  </script>
+ 
+</body>
+</html>
