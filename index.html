@@ -167,7 +167,7 @@
     <div class="video-wrapper">
       <iframe
         id="youtubePlayer"
-        allow="autoplay"
+        allow="autoplay; encrypted-media"
         allowfullscreen>
       </iframe>
     </div>
@@ -231,21 +231,21 @@
  
     totalDisplay.textContent = clips.length;
  
-    function loadClip() {
+function loadClip() {
  
-      answered = false;
+  answered = false;
  
-      const clip = clips[currentRound];
+  const clip = clips[currentRound];
  
-      roundDisplay.textContent = currentRound + 1;
+  roundDisplay.textContent = currentRound + 1;
  
-      result.textContent = "";
-      result.className = "result";
+  result.textContent = "";
+  result.className = "result";
  
-      player.src =
-        `https://www.youtube.com/embed/${clip.youtubeId}?start=${clip.start}&end=${clip.end}&autoplay=1&rel=0`;
+  player.src =
+    `https://www.youtube.com/embed/${clip.youtubeId}?start=${clip.start}&autoplay=1&rel=0`;
  
-    }
+}
  
     function checkAnswer(userAnswer) {
  
